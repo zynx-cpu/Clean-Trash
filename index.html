@@ -242,27 +242,29 @@
             <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
         </footer>
     </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ... โค้ดด้านบน ...
+  // 1. ประกาศตัวแปร URL และ Key (ต้องอยู่บนสุด)
+  const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
+  const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
 
+  // 2. สร้าง Client (ต้องอยู่ถัดมา)
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // เพิ่มบรรทัดนี้เพื่อเช็กว่าโหลดสำเร็จไหม
-  console.log("Supabase Client:", supabase); 
-
-  async function fetchData() {
-    // เปลี่ยน your_table_name เป็นชื่อตารางจริง เช่น waste_records
+  // 3. ประกาศฟังก์ชัน (ต้องอยู่หลัง Client)
+  async function fetchWasteData() {
     const { data, error } = await supabase.from('waste_records').select('*');
     
     if (error) {
         console.error('Error fetching data:', error);
     } else {
-        console.log('Data:', data);
+        console.log('ข้อมูลที่ดึงมาได้:', data);
     }
   }
   
-  // เรียกใช้ฟังก์ชัน
-  fetchData();
+  // 4. เรียกใช้ฟังก์ชัน (ต้องอยู่ล่างสุดเสมอ)
+  fetchWasteData();
 </script>
 </body>
 </html>
