@@ -1,0 +1,18 @@
+<!-- นำเข้าตัว Supabase Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ใส่ URL และ Key ของคุณตรงนี้
+  const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
+  const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // ตัวอย่างการดึงข้อมูล (เช่น ดึงข้อมูลมาแสดง)
+  async function fetchData() {
+    const { data, error } = await supabase.from('your_table_name').select('*');
+    if (error) console.error('Error:', error);
+    else console.log('Data:', data);
+  }
+  
+  // เรียกใช้ฟังก์ชัน (จะแสดงใน Console)
+  fetchData();
+</script>

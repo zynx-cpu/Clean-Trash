@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Trash - Dashboard</title>
+    <!-- ใช้ Font Awesome สำหรับไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ใช้ Google Fonts สำหรับฟอนต์ไทย -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a4b5c;
+            --secondary-color: #2e6f85;
+            --bg-color: #e0f2f1;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* คอนเทนเนอร์หลัก */
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            /* ลวดลายพื้นหลังแบบใบไม้ (จำลองด้วย CSS) */
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            background-size: 300px;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--primary-color);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .logo-icon {
+            background-color: #a3d9a5;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .header .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        /* Menu Item */
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        /* เพิ่มขอบสีเขียวอ่อนรอบๆ ไอคอนตามรูป */
+        .icon-circle::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid #a3d9a5;
+        }
+
+        .menu-item span {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <div class="user-profile">
+                User
+                <div class="user-icon"><i class="fa-solid fa-user"></i></div>
+            </div>
+        </header>
+
+        <!-- Main Menu -->
+        <main class="main-content">
+            <!-- 1. Register/Login -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-arrow-right-to-bracket"></i></div>
+                <span>Register/Login</span>
+            </a>
+
+            <!-- 2. แก้ไขโปรไฟล์ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-pen"></i></div>
+                <span>แก้ไขโปรไฟล์</span>
+            </a>
+
+            <!-- 3. แยกขยะ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-bag-shopping"></i></div>
+                <span>แยกขยะ</span>
+            </a>
+
+            <!-- 4. แลกขยะ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-rotate"></i></div>
+                <span>แลกขยะ</span>
+            </a>
+
+            <!-- 5. ประเภทของขยะ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-trash"></i></div>
+                <span>ประเภทของขยะ</span>
+            </a>
+
+            <!-- 6. การรณรงค์ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-bullhorn"></i></div>
+                <span>การรณรงค์</span>
+            </a>
+
+            <!-- 7. สัดส่วนขยะ -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-chart-pie"></i></div>
+                <span>สัดส่วนขยะ</span>
+            </a>
+
+            <!-- 8. ติดต่อเรา -->
+            <a href="#" class="menu-item">
+                <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                <span>ติดต่อเรา</span>
+            </a>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+</body>
+</html>
