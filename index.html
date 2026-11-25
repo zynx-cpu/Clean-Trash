@@ -243,28 +243,6 @@
         </footer>
     </div>
     
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // 1. ประกาศตัวแปร URL และ Key (ต้องอยู่บนสุด)
-  const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
-  const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
 
-  // 2. สร้าง Client (ต้องอยู่ถัดมา)
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-  // 3. ประกาศฟังก์ชัน (ต้องอยู่หลัง Client)
-  async function fetchWasteData() {
-    const { data, error } = await supabase.from('waste_records').select('*');
-    
-    if (error) {
-        console.error('Error fetching data:', error);
-    } else {
-        console.log('ข้อมูลที่ดึงมาได้:', data);
-    }
-  }
-  
-  // 4. เรียกใช้ฟังก์ชัน (ต้องอยู่ล่างสุดเสมอ)
-  fetchWasteData();
-</script>
 </body>
 </html>
