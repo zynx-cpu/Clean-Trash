@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การรณรงค์ - Clean Trash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary-color: #1a4b5c; --secondary-color: #2e6f85; --bg-color: #e0f2f1; --text-color: #333; --accent-color: #f39c12; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
+
+        .app-container {
+            width: 100%; max-width: 900px; background-color: #ffffff; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat; background-position: bottom right; background-size: 300px;
+        }
+
+        .header { background-color: var(--primary-color); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .header .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 500; }
+        .logo-icon { background-color: #a3d9a5; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); }
+        .back-btn { color: white; text-decoration: none; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .back-btn:hover { color: #a3d9a5; }
+
+        .main-content { padding: 30px; }
+        .page-title { color: var(--primary-color); margin-bottom: 25px; font-size: 1.4rem; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+
+        /* รายการรณรงค์ */
+        .campaign-list { display: flex; flex-direction: column; gap: 20px; }
+
+        .campaign-card {
+            background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden;
+            display: flex; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .campaign-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+
+        /* รูปภาพด้านซ้าย */
+        .campaign-img-box {
+            width: 180px; flex-shrink: 0; background-color: #e0f2f1;
+            display: flex; justify-content: center; align-items: center; font-size: 3rem;
+            border-right: 1px solid #eee;
+        }
+
+        .campaign-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .campaign-date { font-size: 0.85rem; color: var(--secondary-color); margin-bottom: 5px; font-weight: 500; }
+        .campaign-title { font-size: 1.2rem; color: var(--primary-color); font-weight: 500; margin-bottom: 10px; }
+        .campaign-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 15px; }
+        
+        .campaign-btn {
+            margin-top: auto; align-self: flex-start;
+            padding: 8px 20px; background-color: var(--primary-color); color: white;
+            border: none; border-radius: 8px; font-family: 'Kanit', sans-serif; font-size: 0.9rem;
+            cursor: pointer; transition: 0.3s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .campaign-btn:hover { background-color: var(--secondary-color); }
+
+        .footer { background-color: var(--primary-color); color: white; text-align: center; padding: 15px; font-size: 0.8rem; margin-top: 30px; }
+
+        /* =========================================
+           Modal (ป๊อปอัปแสดงรายละเอียด)
+           ========================================= */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white; border-radius: 15px; max-width: 600px; width: 100%;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            position: relative; animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header {
+            background-color: var(--primary-color); color: white; padding: 20px;
+            border-radius: 15px 15px 0 0; position: relative;
+        }
+        .modal-header .modal-icon { font-size: 3rem; margin-bottom: 10px; }
+        .modal-header h3 { font-size: 1.3rem; font-weight: 500; }
+        .modal-header .modal-date { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
+        
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; color: white; font-size: 1.8rem;
+            cursor: pointer; background: none; border: none; font-weight: bold;
+            transition: 0.2s;
+        }
+        .close-btn:hover { color: #f1c40f; transform: scale(1.1); }
+
+        .modal-body { padding: 25px; color: var(--text-color); line-height: 1.7; font-size: 1rem; }
+        .modal-body h4 { color: var(--secondary-color); margin-top: 15px; margin-bottom: 5px; }
+        .modal-body ul { margin-left: 20px; margin-bottom: 15px; }
+        .modal-body li { margin-bottom: 5px; }
+
+        .modal-footer { padding: 0 25px 25px 25px; text-align: right; }
+        .modal-footer button {
+            padding: 10px 25px; background-color: var(--primary-color); color: white;
+            border: none; border-radius: 8px; font-family: 'Kanit', sans-serif; font-size: 1rem;
+            cursor: pointer; transition: 0.3s;
+        }
+        .modal-footer button:hover { background-color: var(--secondary-color); }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .campaign-card { flex-direction: column; }
+            .campaign-img-box { width: 100%; height: 120px; border-right: none; border-bottom: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก</a>
+        </header>
+
+        <main class="main-content">
+            <h2 class="page-title"><i class="fa-solid fa-bullhorn"></i> การรณรงค์และกิจกรรม</h2>
+
+            <div class="campaign-list">
+                <!-- การ์ดที่ 1 -->
+                <div class="campaign-card">
+                    <div class="campaign-img-box">🌍</div>
+                    <div class="campaign-info">
+                        <div class="campaign-date"><i class="fa-regular fa-calendar"></i> 1 - 30 พฤศจิกายน 2025</div>
+                        <div class="campaign-title">แคมเปญ "แยกขยะ ลดโลกร้อน"</div>
+                        <div class="campaign-desc">ร่วมมือกันแยกขยะเปียกและขยะรีไซเคิลอย่างถูกวิธี เพื่อลดปริมาณขยะที่ต้องนำไปฝังกลบ ช่วยลดก๊าซเรือนกระจก</div>
+                        <!-- เปลี่ยนปุ่มให้เรียกฟังก์ชัน openModal -->
+                        <button class="campaign-btn" onclick="openModal('modal1')">ดูรายละเอียด</button>
+                    </div>
+                </div>
+
+                <!-- การ์ดที่ 2 -->
+                <div class="campaign-card">
+                    <div class="campaign-img-box">♻️</div>
+                    <div class="campaign-info">
+                        <div class="campaign-date"><i class="fa-regular fa-calendar"></i> 15 พฤศจิกายน 2025</div>
+                        <div class="campaign-title">กิจกรรม "ขยะแลกแต้ม"</div>
+                        <div class="campaign-desc">นำขยะรีไซเคิลมาแลกเป็นแต้มสะสมที่จุดรับของชุมชน เพื่อนำแต้มไปแลกของรางวัลรักษ์โลกมากมาย</div>
+                        <button class="campaign-btn" onclick="openModal('modal2')">ดูรายละเอียด</button>
+                    </div>
+                </div>
+
+                <!-- การ์ดที่ 3 -->
+                <div class="campaign-card">
+                    <div class="campaign-img-box">🌱</div>
+                    <div class="campaign-info">
+                        <div class="campaign-date"><i class="fa-regular fa-calendar"></i> 25 พฤศจิกายน 2025</div>
+                        <div class="campaign-title">ปลูกป่า สร้างอากาศบริสุทธิ์</div>
+                        <div class="campaign-desc">ชวนทุกคนร่วมปลูกต้นไม้เพื่อเพิ่มพื้นที่สีเขียวและฟื้นฟูระบบนิเวศในชุมชนของเรา</div>
+                        <button class="campaign-btn" onclick="openModal('modal3')">ดูรายละเอียด</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+    <!-- =========================================
+         Modal 1: แยกขยะ ลดโลกร้อน
+         ========================================= -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeModal('modal1')">&times;</button>
+                <div class="modal-icon">🌍</div>
+                <h3>แคมเปญ "แยกขยะ ลดโลกร้อน"</h3>
+                <div class="modal-date"><i class="fa-regular fa-calendar"></i> 1 - 30 พฤศจิกายน 2025</div>
+            </div>
+            <div class="modal-body">
+                <p>ขอเชิญชวนทุกท่านร่วมเป็นส่วนหนึ่งในการแก้ไขปัญหาภาวะโลกร้อน ด้วยการเริ่มต้นง่ายๆ จากบ้านของเราเอง นั่นคือ <strong>"การแยกขยะ"</strong></p>
+                <h4>กิจกรรมภายในแคมเปญ:</h4>
+                <ul>
+                    <li><strong>สัปดาห์ที่ 1:</strong> อบรมให้ความรู้เรื่องการแยกขยะเบื้องต้น (ออนไลน์)</li>
+                    <li><strong>สัปดาห์ที่ 2:</strong> กิจกรรมประกวดถังขยะสร้างสรรค์จากวัสดุเหลือใช้</li>
+                    <li><strong>สัปดาห์ที่ 3:</strong> เปิดจุดรับขยะรีไซเคิลชุมชน (ทุกวันเสาร์)</li>
+                    <li><strong>สัปดาห์ที่ 4:</strong> สรุปผลและมอบรางวัลแก่ผู้ร่วมกิจกรรม</li>
+                </ul>
+                <h4>สิ่งที่ผู้เข้าร่วมจะได้รับ:</h4>
+                <p>แต้มพิเศษ x2 สำหรับการบันทึกข้อมูลแยกขยะผ่านแอปพลิเคชัน Clean Trash ตลอดเดือนพฤศจิกายนนี้</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('modal1')">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         Modal 2: ขยะแลกแต้ม
+         ========================================= -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeModal('modal2')">&times;</button>
+                <div class="modal-icon">♻️</div>
+                <h3>กิจกรรม "ขยะแลกแต้ม"</h3>
+                <div class="modal-date"><i class="fa-regular fa-calendar"></i> 15 พฤศจิกายน 2025</div>
+            </div>
+            <div class="modal-body">
+                <p>นำขยะรีไซเคิลที่คุณสะสมไว้ มาแลกเป็นแต้มเพื่อรับของรางวัลสุดพิเศษ!</p>
+                <h4>สถานที่จัดกิจกรรม:</h4>
+                <p>ลานกิจกรรมชุมชน (หน้าเทศบาล) เวลา 09:00 - 16:00 น.</p>
+                <h4>อัตราการแลกแต้ม:</h4>
+                <ul>
+                    <li>ขวดพลาสติก (PET) 1 กก. = 20 แต้ม</li>
+                    <li>กระป๋องอลูมิเนียม 1 กก. = 30 แต้ม</li>
+                    <li>กระดาษลัง 1 กก. = 10 แต้ม</li>
+                </ul>
+                <p style="color: var(--danger-color); margin-top: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> หมายเหตุ: กรุณาล้างขยะให้สะอาดก่อนนำมาแลก</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('modal2')">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         Modal 3: ปลูกป่า
+         ========================================= -->
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeModal('modal3')">&times;</button>
+                <div class="modal-icon">🌱</div>
+                <h3>ปลูกป่า สร้างอากาศบริสุทธิ์</h3>
+                <div class="modal-date"><i class="fa-regular fa-calendar"></i> 25 พฤศจิกายน 2025</div>
+            </div>
+            <div class="modal-body">
+                <p>ขอเชิญชวนจิตอาสาทุกท่านร่วมกิจกรรมปลูกต้นไม้เพื่อเพิ่มพื้นที่สีเขียวให้กับชุมชนของเรา</p>
+                <h4>กำหนดการ:</h4>
+                <ul>
+                    <li><strong>07:30 น.:</strong> ลงทะเบียนและรับประทานอาหารเช้า</li>
+                    <li><strong>08:30 น.:</strong> พิธีเปิดและกล่าวต้อนรับ</li>
+                    <li><strong>09:00 น.:</strong> เริ่มกิจกรรมปลูกต้นไม้ (พันธุ์ไม้ท้องถิ่น)</li>
+                    <li><strong>12:00 น.:</strong> รับประทานอาหารกลางวันร่วมกัน</li>
+                </ul>
+                <h4>สิ่งที่ต้องเตรียมมา:</h4>
+                <p>เสื้อผ้าที่พร้อมเปื้อนดิน, หมวก, และครีมกันแดด (ทางผู้จัดเตรียมอุปกรณ์ปลูกและน้ำดื่มให้)</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('modal3')">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         Script สำหรับเปิด-ปิด Modal
+         ========================================= -->
+    <script>
+        // ฟังก์ชันเปิด Modal ตาม ID
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            // ป้องกันการเลื่อนหน้าจอด้านหลังขณะเปิด Modal
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        // ฟังก์ชันปิด Modal ตาม ID
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ปิด Modal เมื่อคลิกพื้นที่ว่างด้านนอก (พื้นหลังสีดำ)
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>

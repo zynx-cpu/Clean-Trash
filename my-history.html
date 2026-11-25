@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประวัติของฉัน - Clean Trash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary-color: #1a4b5c; --secondary-color: #2e6f85; --bg-color: #e0f2f1; --text-color: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
+
+        .app-container {
+            width: 100%; max-width: 900px; background-color: #ffffff; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat; background-position: bottom right; background-size: 300px;
+        }
+
+        .header { background-color: var(--primary-color); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .header .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 500; }
+        .logo-icon { background-color: #a3d9a5; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); }
+        .back-btn { color: white; text-decoration: none; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .back-btn:hover { color: #a3d9a5; }
+
+        .main-content { padding: 30px; }
+        .page-title { color: var(--primary-color); margin-bottom: 25px; font-size: 1.4rem; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+
+        /* ตารางแสดงประวัติ */
+        .table-container { overflow-x: auto; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: var(--primary-color); color: white; font-weight: 500; font-size: 0.95rem; }
+        td { font-size: 0.95rem; color: var(--text-color); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f5f9f9; }
+
+        /* รูปภาพในตาราง */
+        .table-img {
+            width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer;
+            transition: transform 0.2s; border: 1px solid #ddd;
+        }
+        .table-img:hover { transform: scale(1.1); }
+        .no-img { color: #aaa; font-size: 0.8rem; font-style: italic; }
+
+        /* สรุปยอดรวม */
+        .summary-box {
+            margin-top: 20px; padding: 15px 20px; background-color: #f0f7f7;
+            border-left: 5px solid var(--primary-color); border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .summary-box span { font-weight: 500; color: var(--primary-color); }
+
+        .message { margin-top: 20px; text-align: center; font-size: 1rem; font-weight: 500; min-height: 24px; }
+
+        .footer { background-color: var(--primary-color); color: white; text-align: center; padding: 15px; font-size: 0.8rem; margin-top: 30px; }
+
+        /* Modal สำหรับดูรูปใหญ่ */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center;
+        }
+        .modal img { max-width: 90%; max-height: 90%; border-radius: 10px; }
+        .modal .close {
+            position: absolute; top: 20px; right: 35px; color: white; font-size: 40px;
+            cursor: pointer; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก</a>
+        </header>
+
+        <main class="main-content">
+            <h2 class="page-title"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการแยกขยะของฉัน</h2>
+
+            <div id="message" class="message"></div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>วันที่</th>
+                            <th>ประเภทขยะ</th>
+                            <th>น้ำหนัก (กก.)</th>
+                            <th>รูปภาพ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- ข้อมูลจะถูกดึงมาแสดงที่นี่ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-box">
+                <span>น้ำหนักรวมทั้งหมด:</span>
+                <span id="totalWeight">0.0 กก.</span>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+    <!-- Modal ดูรูปใหญ่ -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" alt="รูปใหญ่">
+    </div>
+
+    <!-- โหลด Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
+        const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const messageDiv = document.getElementById('message');
+        const tableBody = document.getElementById('historyTableBody');
+        const totalWeightSpan = document.getElementById('totalWeight');
+
+        // ฟังก์ชันดึงข้อมูลเฉพาะของ User ที่ล็อกอินอยู่
+        async function loadMyHistory() {
+            // 1. ตรวจสอบว่าล็อกอินอยู่หรือไม่
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !user) {
+                messageDiv.innerHTML = '<span style="color: red;">กรุณาเข้าสู่ระบบเพื่อดูประวัติ</span>';
+                // เด้งไปหน้า Login หลัง 1.5 วินาที
+                setTimeout(() => window.location.href = 'auth.html', 1500);
+                return;
+            }
+
+            // แสดงชื่อผู้ใช้
+            messageDiv.innerHTML = `<span style="color: gray; font-size: 0.9rem;">ข้อมูลของ: ${user.email}</span>`;
+
+            // 2. ดึงข้อมูลจากตาราง โดยกรองเฉพาะ user_id ที่ตรงกับคนที่ล็อกอิน
+            const { data: records, error } = await supabase
+                .from('waste_records')
+                .select('*')
+                .eq('user_id', user.id) // 👈 กรองเฉพาะของ User คนนี้
+                .order('created_at', { ascending: false }); // เรียงจากใหม่ไปเก่า
+
+            if (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = `<span style="color: red;">เกิดข้อผิดพลาด: ${error.message}</span>`;
+                return;
+            }
+
+            // 3. ถ้าไม่มีข้อมูลเลย
+            if (records.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #888; padding: 30px;">
+                            <i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            ยังไม่มีประวัติการแยกขยะ <br>
+                            <a href="waste-form.html" style="color: var(--primary-color);">ไปบันทึกข้อมูลเลย!</a>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // 4. นำข้อมูลมาแสดงในตาราง
+            let totalWeight = 0;
+            let htmlContent = '';
+
+            records.forEach(record => {
+                // จัดรูปแบบวันที่
+                const date = new Date(record.created_at);
+                const formattedDate = date.toLocaleDateString('th-TH', { 
+                    year: 'numeric', month: 'short', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit' 
+                });
+
+                // รวมน้ำหนัก
+                totalWeight += parseFloat(record.weight) || 0;
+
+                // จัดการรูปภาพ
+                let imageHtml = '<span class="no-img">ไม่มีรูป</span>';
+                if (record.image_url) {
+                    imageHtml = `<img src="${record.image_url}" class="table-img" onclick="openModal('${record.image_url}')" alt="รูปขยะ">`;
+                }
+
+                htmlContent += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${record.waste_type}</td>
+                        <td>${record.weight} กก.</td>
+                        <td>${imageHtml}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = htmlContent;
+            totalWeightSpan.textContent = totalWeight.toFixed(2) + ' กก.';
+        }
+
+        // ฟังก์ชันเปิด-ปิด Modal ดูรูปใหญ่
+        function openModal(imgSrc) {
+            document.getElementById('imageModal').style.display = 'flex';
+            document.getElementById('modalImage').src = imgSrc;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // ปิด Modal เมื่อคลิกพื้นที่ว่าง
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // เรียกใช้ฟังก์ชันเมื่อโหลดหน้า
+        loadMyHistory();
+    </script>
+</body>
+</html>

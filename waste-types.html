@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประเภทของขยะ - Clean Trash</title>
+    <!-- ใช้ Font Awesome และ Google Fonts เหมือนหน้าแรก -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ใช้ CSS ชุดเดิมจากหน้า Dashboard --- */
+        :root {
+            --primary-color: #1a4b5c;
+            --secondary-color: #2e6f85;
+            --bg-color: #e0f2f1;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px; /* เพิ่ม padding เผื่อหน้าจอเล็ก */
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            /* ลายพื้นหลังใบไม้ */
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            background-size: 300px;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .logo-icon {
+            background-color: #a3d9a5;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        /* ปุ่มกลับหน้าหลัก */
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #a3d9a5;
+        }
+
+        /* พื้นที่เนื้อหา */
+        .main-content {
+            padding: 30px 40px;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* การ์ดความรู้ */
+        .info-card {
+            background: #f8fbfb;
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .info-card:hover {
+            transform: translateX(5px);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        
+        .info-card strong {
+            color: var(--secondary-color);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header (สไตล์เดียวกับ Dashboard) -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <!-- ปุ่มกลับหน้าหลัก -->
+            <a href="index.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก
+            </a>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h2 class="page-title">
+                <i class="fa-solid fa-trash"></i> ประเภทของขยะ
+            </h2>
+
+            <!-- การ์ดที่ 1: ขยะเปียก -->
+            <div class="info-card">
+                <h3><i class="fa-solid fa-leaf"></i> 1. ขยะเปียก (ขยะอินทรีย์)</h3>
+                <p>ขยะที่ย่อยสลายได้ง่าย เช่น เศษอาหาร, เศษผักผลไม้, ใบไม้</p>
+                <p><strong>วิธีจัดการ:</strong> นำไปทำปุ๋ยหมัก หรือทิ้งในถังสีเขียว</p>
+            </div>
+
+            <!-- การ์ดที่ 2: ขยะรีไซเคิล -->
+            <div class="info-card">
+                <h3><i class="fa-solid fa-recycle"></i> 2. ขยะรีไซเคิล (ขยะแห้ง)</h3>
+                <p>ขยะที่สามารถนำกลับมาใช้ใหม่ได้ เช่น ขวดพลาสติก, กระดาษ, กระป๋องอลูมิเนียม</p>
+                <p><strong>วิธีจัดการ:</strong> ล้างให้สะอาด แยกประเภท แล้วนำไปขายหรือทิ้งในถังสีเหลือง</p>
+            </div>
+
+            <!-- การ์ดที่ 3: ขยะอันตราย -->
+            <div class="info-card">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> 3. ขยะอันตราย</h3>
+                <p>ขยะที่มีสารพิษ เช่น หลอดไฟ, ถ่านไฟฉาย, ยาหมดอายุ, สเปรย์</p>
+                <p><strong>วิธีจัดการ:</strong> ต้องทิ้งในถังสีแดง หรือส่งคืนร้านค้า/จุดรับเฉพาะ</p>
+            </div>
+        </main>
+
+        <!-- Footer (สไตล์เดียวกับ Dashboard) -->
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+</body>
+</html>

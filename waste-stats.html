@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สัดส่วนขยะ - Clean Trash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- 1. โหลด Chart.js ไว้ใน Head เพื่อให้โหลดเสร็จก่อน -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root { --primary-color: #1a4b5c; --secondary-color: #2e6f85; --bg-color: #e0f2f1; --text-color: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
+
+        .app-container {
+            width: 100%; max-width: 900px; background-color: #ffffff; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat; background-position: bottom right; background-size: 300px;
+        }
+
+        .header { background-color: var(--primary-color); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .header .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 500; }
+        .logo-icon { background-color: #a3d9a5; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); }
+        .back-btn { color: white; text-decoration: none; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .back-btn:hover { color: #a3d9a5; }
+
+        .main-content { padding: 30px; }
+        .page-title { color: var(--primary-color); margin-bottom: 25px; font-size: 1.4rem; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+
+        /* ส่วนของกราฟ */
+        .chart-container {
+            position: relative; width: 100%; max-width: 400px; margin: 0 auto 30px auto;
+            background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            /* กำหนดความสูงขั้นต่ำไว้กันกราฟหาย */
+            min-height: 300px; 
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* สรุปข้อมูลด้านล่าง */
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;
+        }
+        .summary-card {
+            background: #f9fbfb; border: 1px solid #eee; border-radius: 10px; padding: 15px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .summary-icon {
+            width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; font-size: 1.2rem; color: white;
+        }
+        .summary-info h4 { font-size: 0.9rem; color: #666; margin-bottom: 2px; font-weight: 400; }
+        .summary-info p { font-size: 1.2rem; color: var(--primary-color); font-weight: 500; }
+
+        /* สีสำหรับแต่ละประเภท */
+        .color-organic { background-color: #27ae60; } /* เขียว */
+        .color-dry { background-color: #f39c12; }     /* ส้ม */
+        .color-recycle { background-color: #3498db; } /* ฟ้า */
+        .color-hazardous { background-color: #e74c3c; } /* แดง */
+
+        .message { text-align: center; font-size: 1rem; color: #888; margin-top: 20px; }
+
+        .footer { background-color: var(--primary-color); color: white; text-align: center; padding: 15px; font-size: 0.8rem; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก</a>
+        </header>
+
+        <main class="main-content">
+            <h2 class="page-title"><i class="fa-solid fa-chart-pie"></i> สัดส่วนขยะ (ทดลอง 50/50)</h2>
+
+            <div id="message" class="message"></div>
+
+            <!-- พื้นที่แสดงกราฟ -->
+            <div class="chart-container" id="chartContainer">
+                <!-- ใส่ Canvas ไว้ข้างใน -->
+                <canvas id="wasteChart"></canvas>
+            </div>
+
+            <!-- สรุปข้อมูลเป็นตัวเลข -->
+            <div class="summary-grid" id="summaryGrid"></div>
+        </main>
+
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+    <!-- โหลด Supabase (เผื่อไว้) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- สคริปต์หลัก -->
+    <script>
+        // 2. ห่อโค้ดทั้งหมดไว้ใน window.onload เพื่อให้แน่ใจว่าโหลดเสร็จหมดแล้ว
+        window.onload = function() {
+            
+            // ข้อมูลจำลอง 50/50
+            const labels = ['ขยะเปียก', 'ขยะรีไซเคิล']; 
+            const dataValues = [50, 50]; 
+
+            // เรียกฟังก์ชันวาดกราฟทันที
+            renderChart(labels, dataValues);
+            renderSummary(labels, dataValues);
+        };
+
+        // ฟังก์ชันวาดกราฟ
+        function renderChart(labels, data) {
+            const canvas = document.getElementById('wasteChart');
+            if (!canvas) return; // ถ้าหาไม่เจอให้หยุด
+
+            const ctx = canvas.getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#27ae60', '#3498db'], // เขียว, ฟ้า
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // สำคัญ! เพื่อให้กราฟปรับตาม Container
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Kanit', size: 13 },
+                                padding: 15,
+                                usePointStyle: true,
+                                boxWidth: 8
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = parseFloat(context.raw);
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return ` ${value.toFixed(2)} กก. (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ฟังก์ชันแสดงสรุป
+        function renderSummary(labels, data) {
+            const summaryGrid = document.getElementById('summaryGrid');
+            const iconClasses = { 'ขยะเปียก': 'fa-leaf', 'ขยะรีไซเคิล': 'fa-recycle' };
+            const colorClasses = { 'ขยะเปียก': 'color-organic', 'ขยะรีไซเคิล': 'color-recycle' };
+
+            let html = '';
+            labels.forEach((label, index) => {
+                const weight = parseFloat(data[index]);
+                html += `
+                    <div class="summary-card">
+                        <div class="summary-icon ${colorClasses[label]}">
+                            <i class="fa-solid ${iconClasses[label]}"></i>
+                        </div>
+                        <div class="summary-info">
+                            <h4>${label}</h4>
+                            <p>${weight.toFixed(2)} กก.</p>
+                        </div>
+                    </div>
+                `;
+            });
+            summaryGrid.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

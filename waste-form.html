@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แยกขยะ - Clean Trash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a4b5c;
+            --secondary-color: #2e6f85;
+            --bg-color: #e0f2f1;
+            --text-color: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C80 20, 100 50, 50 100 C0 50, 20 20, 50 0" fill="%23e0f2f1" opacity="0.4"/></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            background-size: 300px;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 500; }
+        .logo-icon { background-color: #a3d9a5; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); }
+        .back-btn { color: white; text-decoration: none; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .back-btn:hover { color: #a3d9a5; }
+
+        .main-content { padding: 30px; }
+
+        .page-title {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 1rem; color: var(--text-color); font-weight: 500; }
+        
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            transition: 0.3s;
+            background-color: #f9f9f9;
+        }
+        input:focus, select:focus { border-color: var(--primary-color); outline: none; background-color: #fff; }
+
+        /* ส่วนอัปโหลดรูปภาพ */
+        .file-upload-wrapper {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+        .file-upload-wrapper:hover { border-color: var(--primary-color); background-color: #eef7f7; }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+        }
+        .file-upload-wrapper i { font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; }
+        .file-upload-wrapper p { color: #666; font-size: 0.9rem; }
+        
+        /* พรีวิวรูป */
+        #imagePreview {
+            display: none;
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        button.submit-btn:hover { background-color: var(--secondary-color); }
+        button.submit-btn:disabled { background-color: #999; cursor: not-allowed; }
+
+        .message { margin-top: 20px; text-align: center; font-size: 1rem; min-height: 24px; font-weight: 500; }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-trash-can"></i></div>
+                Clean Trash
+            </div>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก</a>
+        </header>
+
+        <main class="main-content">
+            <h2 class="page-title"><i class="fa-solid fa-bag-shopping"></i> บันทึกการแยกขยะ</h2>
+
+            <form id="wasteForm">
+                <div class="form-group">
+                    <label for="wasteType">ประเภทขยะ</label>
+                    <select id="wasteType" required>
+                        <option value="">-- เลือกประเภทขยะ --</option>
+                        <option value="ขยะเปียก">ขยะเปียก (Organic Waste)</option>
+                        <option value="ขยะแห้ง">ขยะแห้ง (Dry Waste)</option>
+                        <option value="ขยะรีไซเคิล">ขยะรีไซเคิล (Recycle Waste)</option>
+                        <option value="ขยะอันตราย">ขยะอันตราย (Hazardous Waste)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">น้ำหนัก (กิโลกรัม)</label>
+                    <input type="number" id="weight" step="0.1" min="0.1" placeholder="เช่น 1.5" required>
+                </div>
+
+                <!-- ส่วนอัปโหลดรูปภาพ -->
+                <div class="form-group">
+                    <label>แนบรูปภาพ (ถ้ามี)</label>
+                    <div class="file-upload-wrapper">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์</p>
+                        <input type="file" id="imageInput" accept="image/*">
+                    </div>
+                    <img id="imagePreview" src="" alt="ตัวอย่างรูปภาพ">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fa-solid fa-save"></i> บันทึกข้อมูล
+                </button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </main>
+
+        <footer class="footer">
+            <p>ส่งเสริมการจัดการขยะอย่างยั่งยืนเพื่อสิ่งแวดล้อมที่ดีขึ้น</p>
+            <p>&copy; 2025 Clean Trash. สงวนลิขสิทธิ์</p>
+        </footer>
+    </div>
+
+    <!-- โหลด Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
+        const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // 1. ระบบพรีวิวรูปภาพเมื่อเลือกไฟล์
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+
+        // 2. จัดการฟอร์มเมื่อกด Submit
+        document.getElementById('wasteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const wasteType = document.getElementById('wasteType').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const file = imageInput.files[0];
+            
+            submitBtn.disabled = true;
+            messageDiv.innerHTML = '<span style="color: blue;">กำลังบันทึกข้อมูล...</span>';
+
+            let imageUrl = null;
+
+            try {
+                // --- ขั้นตอนที่ 1: อัปโหลดรูปภาพ (ถ้ามี) ---
+                if (file) {
+                    // สร้างชื่อไฟล์ใหม่ไม่ให้ซ้ำกัน (ใช้เวลาปัจจุบัน + ชื่อไฟล์เดิม)
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}.${fileExt}`;
+                    const filePath = `${fileName}`;
+
+                    // อัปโหลดไฟล์ไปยัง Bucket ชื่อ waste_images
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('waste_images')
+                        .upload(filePath, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // ดึง URL สาธารณะของรูปภาพ
+                    const { data: urlData } = supabase.storage
+                        .from('waste_images')
+                        .getPublicUrl(filePath);
+                        
+                    imageUrl = urlData.publicUrl;
+                }
+
+                // --- ขั้นตอนที่ 2: บันทึกข้อมูลลงตาราง ---
+                const { error: dbError } = await supabase
+                    .from('waste_records')
+                    .insert([{ 
+                        waste_type: wasteType, 
+                        weight: weight,
+                        image_url: imageUrl // เก็บ URL รูปภาพ (ถ้าไม่มีจะเป็น null)
+                    }]);
+
+                if (dbError) throw dbError;
+
+                // สำเร็จ
+                messageDiv.innerHTML = '<span style="color: green;">บันทึกข้อมูลสำเร็จ! 🎉</span>';
+                document.getElementById('wasteForm').reset();
+                imagePreview.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = `<span style="color: red;">เกิดข้อผิดพลาด: ${error.message}</span>`;
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
