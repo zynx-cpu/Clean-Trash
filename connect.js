@@ -1,7 +1,7 @@
 // connect.js
 const supabaseUrl = 'https://uzkilomxmgerbcaqwohr.supabase.co';
 const supabaseKey = 'sb_publishable_04y-wjh0ohG-yMN6mOWaWw_MUvUZWRa';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function fetchWasteData() {
   const { data, error } = await supabase.from('waste_records').select('*');
